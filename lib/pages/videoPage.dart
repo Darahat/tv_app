@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:tv_app/pages/tv_list.dart';
+import 'package:tv_app/components/topbar.dart';
+import 'package:tv_app/components/sidenavbar.dart';
 
 class VideoPage extends StatefulWidget {
-  final String streamingLink;
+  VideoPage({Key? key, required this.title, required this.streamingLink})
+      : super(key: key);
 
-  VideoPage(this.streamingLink);
+  final String streamingLink;
+  final String title;
 
   @override
   _VideoPageState createState() => _VideoPageState();
@@ -17,7 +20,7 @@ class _VideoPageState extends State<VideoPage> {
   double _volume = 100.0;
   double _position = 0.0;
   bool _isFullScreen = false;
-  Duration _duration = Duration();
+  Duration _duration = const Duration();
 
   @override
   void initState() {
@@ -71,7 +74,12 @@ class _VideoPageState extends State<VideoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('VLC Player'),
+        backgroundColor: const Color(0xff27A0C6),
+        elevation: 0,
+        title: Text(widget.title),
+      ),
+      drawer: Drawer(
+        child: DrawerNav(),
       ),
       body: Column(
         children: [
@@ -81,7 +89,7 @@ class _VideoPageState extends State<VideoPage> {
                 VlcPlayer(
                   controller: _controller,
                   aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
-                  placeholder: Center(child: CircularProgressIndicator()),
+                  placeholder: const Center(child: CircularProgressIndicator()),
                 ),
                 if (_isFullScreen)
                   Positioned.fill(
@@ -95,7 +103,7 @@ class _VideoPageState extends State<VideoPage> {
               ],
             ),
           ),
-          SizedBox(height: 16.0),
+          // const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -104,20 +112,20 @@ class _VideoPageState extends State<VideoPage> {
                 onPressed: _playPause,
               ),
               IconButton(
-                icon: Icon(Icons.stop),
+                icon: const Icon(Icons.stop),
                 onPressed: _stop,
               ),
-              Slider(
-                value: _position,
-                min: 0.0,
-                max: _duration.inMilliseconds.toDouble(),
-                onChanged: (value) {
-                  setState(() {
-                    _position = value;
-                  });
-                },
-                onChangeEnd: _seek,
-              ),
+              // Slider(
+              //   value: _position,
+              //   min: 0.0,
+              //   max: _duration.inMilliseconds.toDouble(),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _position = value;
+              //     });
+              //   },
+              //   onChangeEnd: _seek,
+              // ),
               IconButton(
                 icon: Icon(
                     _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen),
