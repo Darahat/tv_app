@@ -86,123 +86,89 @@ class _VideoPageState extends State<VideoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff27A0C6),
-        elevation: 0,
-        title: Text(widget.title),
-      ),
+      appBar: _isFullScreen
+          ? null
+          : AppBar(
+              backgroundColor: Color(0xff27A0C6),
+              elevation: 0,
+              title: Text(widget.title),
+            ),
       drawer: Drawer(
         child: DrawerNav(),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: OrientationBuilder(
-              builder: (context, orientation) {
-                final isPortrait = orientation == Orientation.portrait;
-                return Container(
-                  height: isPortrait
-                      ? MediaQuery.of(context).size.height * 0.8
-                      : MediaQuery.of(context).size.height,
-                  child:
-                      // children: [
-                      VlcPlayer(
-                    controller: _controller,
-                    aspectRatio: isPortrait
-                        ? 16 / 9
-                        : 3, // Adjust the aspect ratio as needed
-                    placeholder:
-                        const Center(child: CircularProgressIndicator()),
+      body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            _playPause();
+          },
+          child: IgnorePointer(
+              child: Column(
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  // Add your onPressed code here!
+                },
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.fullscreen_exit),
+              ),
+              Expanded(
+                child: OrientationBuilder(
+                  builder: (context, orientation) {
+                    final isPortrait = orientation == Orientation.portrait;
+                    return
+                        // children: [
+
+                        Container(
+                      height: isPortrait
+                          ? MediaQuery.of(context).size.height * 0.8
+                          : MediaQuery.of(context).size.height,
+                      child: VlcPlayer(
+                        controller: _controller,
+                        aspectRatio: isPortrait
+                            ? 16 / 9
+                            : 3, // Adjust the aspect ratio as needed
+                        placeholder:
+                            const Center(child: CircularProgressIndicator()),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ))),
+      bottomNavigationBar: _isFullScreen
+          ? null
+          : BottomNavigationBar(
+              // fixedColor: Colors.amber,
+              items: [
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.blue,
+                  icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                  label: _isPlaying ? 'Pause' : 'Play',
+                ),
+                const BottomNavigationBarItem(
+                  backgroundColor: Colors.blue,
+                  icon: Icon(Icons.stop),
+                  label: 'Stop',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.blue,
+                  icon: Icon(
+                    _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
                   ),
-                  // if (_isFullScreen && isPortrait) ...[
-                  //   Positioned.fill(
-                  //     child: GestureDetector(
-                  //       onTap: _toggleFullScreen,
-                  //       child: Container(
-                  //         color: const Color.fromARGB(0, 201, 8, 8),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ],
-                  // ],
-                );
+                  label: _isFullScreen ? 'Exit Fullscreen' : 'Fullscreen',
+                ),
+              ],
+              onTap: (index) {
+                if (index == 0) {
+                  _playPause();
+                } else if (index == 1) {
+                  _stop();
+                } else if (index == 2) {
+                  _toggleFullScreen();
+                }
               },
             ),
-          ),
-          // const SizedBox(height: 16.0),
-          // if (!_isFullScreen) ...[
-          //   Text(
-          //     'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isnt anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',
-          //     style: const TextStyle(fontSize: 18),
-          //   ),
-          // ] else
-          //   ...[]
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     IconButton(
-          //       icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-          //       onPressed: _playPause,
-          //     ),
-          //     IconButton(
-          //       icon: const Icon(Icons.stop),
-          //       onPressed: _stop,
-          //     ),
-          //     Slider(
-          //       value: _volume,
-          //       min: 0.0,
-          //       max: 100.0,
-          //       onChanged: _setVolume,
-          //     ),
-          //     IconButton(
-          //       icon: Icon(
-          //         _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-          //       ),
-          //       onPressed: _toggleFullScreen,
-          //     ),
-          //   ],
-          // ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        // fixedColor: Colors.amber,
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-            label: _isPlaying ? 'Pause' : 'Play',
-          ),
-          const BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.stop),
-            label: 'Stop',
-          ),
-          const BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.volume_up),
-            label: 'Volume',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(
-              _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-            ),
-            label: _isFullScreen ? 'Exit Fullscreen' : 'Fullscreen',
-          ),
-        ],
-        onTap: (index) {
-          if (index == 0) {
-            _playPause();
-          } else if (index == 1) {
-            _stop();
-          } else if (index == 2) {
-            // Handle volume
-          } else if (index == 3) {
-            _toggleFullScreen();
-          }
-        },
-      ),
     );
   }
 }
