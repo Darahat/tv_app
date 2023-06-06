@@ -22,6 +22,7 @@ class _VideoPageState extends State<VideoPage> {
   double _volume = 100.0;
   double _position = 0.0;
   bool _isFullScreen = false;
+  bool _showBars = false;
   Duration _duration = const Duration();
 
   @override
@@ -38,17 +39,22 @@ class _VideoPageState extends State<VideoPage> {
   }
 
   void _playPause() {
+    _showBarFunction();
     if (_isPlaying) {
       _controller.pause();
     } else {
       _controller.play();
     }
+    ;
+
     setState(() {
       _isPlaying = !_isPlaying;
     });
   }
 
   void _stop() {
+    _showBarFunction();
+
     _controller.stop();
     setState(() {
       _isPlaying = false;
@@ -59,6 +65,16 @@ class _VideoPageState extends State<VideoPage> {
     _controller.setTime(position.toInt());
   }
 
+  void _showBarFunction() {
+    setState(() {
+      if (_showBars == true) {
+        _showBars = false;
+      } else {
+        _showBars = true;
+      }
+    });
+  }
+
   void _setVolume(double volume) {
     _controller.setVolume(volume.toInt());
     setState(() {
@@ -66,7 +82,17 @@ class _VideoPageState extends State<VideoPage> {
     });
   }
 
+  String _showBarsText() {
+    if (_showBars) {
+      return 'True';
+    } else {
+      return 'false';
+    }
+  }
+
   void _toggleFullScreen() {
+    _showBarFunction();
+
     if (_isFullScreen) {
       setState(() {
         _isFullScreen = !_isFullScreen;
@@ -85,90 +111,98 @@ class _VideoPageState extends State<VideoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _isFullScreen
-          ? null
-          : AppBar(
-              backgroundColor: Color(0xff27A0C6),
-              elevation: 0,
-              title: Text(widget.title),
-            ),
-      drawer: Drawer(
-        child: DrawerNav(),
-      ),
-      body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            _playPause();
-          },
-          child: IgnorePointer(
-              child: Column(
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  // Add your onPressed code here!
-                },
-                backgroundColor: Colors.green,
-                child: const Icon(Icons.fullscreen_exit),
-              ),
-              Expanded(
-                child: OrientationBuilder(
-                  builder: (context, orientation) {
-                    final isPortrait = orientation == Orientation.portrait;
-                    return
-                        // children: [
-
-                        Container(
-                      height: isPortrait
-                          ? MediaQuery.of(context).size.height * 0.8
-                          : MediaQuery.of(context).size.height,
-                      child: VlcPlayer(
-                        controller: _controller,
-                        aspectRatio: isPortrait
-                            ? 16 / 9
-                            : 3, // Adjust the aspect ratio as needed
-                        placeholder:
-                            const Center(child: CircularProgressIndicator()),
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.popUntil(context, ModalRoute.withName('/'));
+          return true;
+        },
+        child: Scaffold(
+          appBar: _showBars
+              ? null
+              : AppBar(
+                  backgroundColor: Color(0xff27A0C6),
+                  elevation: 0,
+                  // title: Text(widget.title),
+                  title: Text(_showBarsText()),
+                ),
+          drawer: Drawer(
+            child: DrawerNav(),
+          ),
+          body: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _playPause();
+              },
+              child: IgnorePointer(
+                  child: Column(
+                children: [
+                  // FloatingActionButton(
+                  //   onPressed: () {
+                  //     // Add your onPressed code here!
+                  //     _toggleFullScreen();
+                  //   },
+                  //   backgroundColor: Colors.green,
+                  //   child: const Icon(Icons.fullscreen_exit),
+                  // ),
+                  Expanded(
+                    child: OrientationBuilder(
+                      builder: (context, orientation) {
+                        final isPortrait = orientation == Orientation.portrait;
+                        return
+                            // children: [
+                            Container(
+                          height: isPortrait
+                              ? MediaQuery.of(context).size.height * 0.8
+                              : MediaQuery.of(context).size.height,
+                          child: VlcPlayer(
+                            controller: _controller,
+                            aspectRatio: isPortrait
+                                ? 16 / 9
+                                : 3, // Adjust the aspect ratio as needed
+                            placeholder: const Center(
+                                child: CircularProgressIndicator()),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ))),
+          bottomNavigationBar: _showBars
+              ? null
+              : BottomNavigationBar(
+                  // fixedColor: Colors.amber,
+                  items: [
+                    BottomNavigationBarItem(
+                      backgroundColor: Colors.blue,
+                      icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                      label: _isPlaying ? 'Pause' : 'Play',
+                    ),
+                    const BottomNavigationBarItem(
+                      backgroundColor: Colors.blue,
+                      icon: Icon(Icons.stop),
+                      label: 'Stop',
+                    ),
+                    BottomNavigationBarItem(
+                      backgroundColor: Colors.blue,
+                      icon: Icon(
+                        _isFullScreen
+                            ? Icons.fullscreen_exit
+                            : Icons.fullscreen,
                       ),
-                    );
+                      label: _isFullScreen ? 'Exit Fullscreen' : 'Fullscreen',
+                    ),
+                  ],
+                  onTap: (index) {
+                    if (index == 0) {
+                      _playPause();
+                    } else if (index == 1) {
+                      _stop();
+                    } else if (index == 2) {
+                      _toggleFullScreen();
+                    }
                   },
                 ),
-              ),
-            ],
-          ))),
-      bottomNavigationBar: _isFullScreen
-          ? null
-          : BottomNavigationBar(
-              // fixedColor: Colors.amber,
-              items: [
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.blue,
-                  icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                  label: _isPlaying ? 'Pause' : 'Play',
-                ),
-                const BottomNavigationBarItem(
-                  backgroundColor: Colors.blue,
-                  icon: Icon(Icons.stop),
-                  label: 'Stop',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.blue,
-                  icon: Icon(
-                    _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                  ),
-                  label: _isFullScreen ? 'Exit Fullscreen' : 'Fullscreen',
-                ),
-              ],
-              onTap: (index) {
-                if (index == 0) {
-                  _playPause();
-                } else if (index == 1) {
-                  _stop();
-                } else if (index == 2) {
-                  _toggleFullScreen();
-                }
-              },
-            ),
-    );
+        ));
   }
 }

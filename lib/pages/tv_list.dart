@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tv_app/pages/videoPage.dart';
-import 'package:tv_app/components/topbar.dart';
 import 'package:tv_app/components/sidenavbar.dart';
-import 'package:tv_app/components/bottomnavbar.dart';
 import 'package:tv_app/components/tv_listComponent.dart';
 
 class TVList extends StatefulWidget {
@@ -70,7 +68,7 @@ class _TVListState extends State<TVList> {
             length: 5,
             child: Scaffold(
               appBar: AppBar(
-                backgroundColor: Color(0xff27A0C6),
+                backgroundColor: const Color(0xff27A0C6),
                 elevation: 0,
                 title: const Text('MediaLink24 TV'),
                 bottom: const TabBar(
@@ -82,6 +80,16 @@ class _TVListState extends State<TVList> {
                     Tab(text: 'English'),
                   ],
                 ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context,
+                          delegate: MySearchDelegate(tvShows));
+                    },
+                  ),
+                ],
               ),
               drawer: Drawer(
                 child: DrawerNav(),
@@ -108,11 +116,81 @@ class _TVListState extends State<TVList> {
                     tvshow: englishChannel,
                     key: null,
                   ),
-                  
-                 
-                   
                 ],
               ),
             )));
+  }
+}
+
+class MySearchDelegate extends SearchDelegate {
+  final List<dynamic> tvShows;
+  MySearchDelegate(this.tvShows);
+
+  @override
+  Widget? buildLeading(BuildContext context) => Container(
+      decoration: BoxDecoration(
+        color: Color.fromARGB(255, 6, 150, 198), // Set the background color
+        borderRadius: BorderRadius.circular(10), // Set the border radius
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 0, 0, 0)
+                .withOpacity(0.5), // Set the shadow color
+            spreadRadius: 2, // Set the spread radius
+            blurRadius: 5, // Set the blur radius
+            offset: const Offset(0, 3), // Set the shadow offset
+          ),
+        ],
+      ),
+      child: IconButton(
+          onPressed: () => close(context, null),
+          icon: const Icon(Icons.arrow_back)));
+
+  @override
+  List<Widget>? buildActions(BuildContext context) => [
+        IconButton(
+            onPressed: () => {
+                  if (query.isEmpty)
+                    {
+                      close(context, null),
+                    }
+                  else
+                    {
+                      query = '',
+                    }
+                },
+            icon: const Icon(Icons.close))
+      ];
+
+  @override
+  Widget buildResults(BuildContext context) => Container();
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<dynamic> searchResults = tvShows.where((tvShow) {
+      final result = tvShow['title'].toLowerCase();
+      final input = query.toLowerCase();
+      return result.contains(input);
+    }).toList();
+
+    return ListView.builder(
+      itemCount: searchResults.length,
+      itemBuilder: (BuildContext context, int index) {
+        final tvShow = searchResults[index];
+        return ListTile(
+            title: Text(tvShow['title']),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPage(
+                    key: const Key(''),
+                    streamingLink: tvShow['stream'],
+                    title: tvShow['title'],
+                  ),
+                ),
+              );
+            });
+      },
+    );
   }
 }
