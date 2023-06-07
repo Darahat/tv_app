@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
-import 'package:tv_app/pages/tv_list.dart';
+import 'package:medialink24tv/pages/tv_list.dart';
 
 class DrawerNav extends StatefulWidget {
   DrawerNav({Key? key}) : super(key: key);

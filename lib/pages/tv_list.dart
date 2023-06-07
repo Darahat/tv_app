@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:tv_app/pages/videoPage.dart';
-import 'package:tv_app/components/sidenavbar.dart';
-import 'package:tv_app/components/tv_listComponent.dart';
+import 'package:medialink24tv/pages/videoPage.dart';
+import 'package:medialink24tv/components/sidenavbar.dart';
+import 'package:medialink24tv/components/tv_listComponent.dart';
 
 class TVList extends StatefulWidget {
   const TVList({super.key});
@@ -72,6 +72,7 @@ class _TVListState extends State<TVList> {
                 elevation: 0,
                 title: const Text('MediaLink24 TV'),
                 bottom: const TabBar(
+                  indicatorColor: Color.fromARGB(255, 57, 1, 1),
                   tabs: [
                     Tab(text: 'Sports'),
                     Tab(text: 'Music'),

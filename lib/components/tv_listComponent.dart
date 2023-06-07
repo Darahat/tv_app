@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tv_app/pages/videoPage.dart';
+import 'package:medialink24tv/pages/videoPage.dart';
 
 class Tv_listComponent extends StatefulWidget {
   final tvshow;

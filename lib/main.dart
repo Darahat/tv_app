@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:tv_app/pages/tv_list.dart';
+import 'package:medialink24tv/pages/tv_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,7 +16,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
- 
-
-

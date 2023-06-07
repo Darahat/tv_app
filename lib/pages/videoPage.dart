@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:tv_app/components/topbar.dart';
-import 'package:tv_app/components/sidenavbar.dart';
+import 'package:medialink24tv/components/topbar.dart';
+import 'package:medialink24tv/components/sidenavbar.dart';
 
 class VideoPage extends StatefulWidget {
   const VideoPage(
@@ -122,8 +122,8 @@ class _VideoPageState extends State<VideoPage> {
               : AppBar(
                   backgroundColor: Color(0xff27A0C6),
                   elevation: 0,
-                  // title: Text(widget.title),
-                  title: Text(_showBarsText()),
+                  title: Text(widget.title),
+                  // title: Text(_showBarsText()),
                 ),
           drawer: Drawer(
             child: DrawerNav(),

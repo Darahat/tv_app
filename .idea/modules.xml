@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/tv_app.iml" filepath="$PROJECT_DIR$/tv_app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/tv_app_android.iml" filepath="$PROJECT_DIR$/android/tv_app_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/medialink24tv.iml" filepath="$PROJECT_DIR$/medialink24tv.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/medialink24tv_android.iml" filepath="$PROJECT_DIR$/android/medialink24tv_android.iml" />
     </modules>
   </component>
 </project>

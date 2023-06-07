@@ -1,6 +1,6 @@
 {
-    "name": "tv_app",
-    "short_name": "tv_app",
+    "name": "medialink24tv",
+    "short_name": "medialink24tv",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
